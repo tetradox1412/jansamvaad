@@ -83,8 +83,12 @@ app.post('/api/grievances', async (req, res) => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.send('Jansamvaad Backend is Running');
+// Serve Static Assets (Frontend)
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// Catch-all route for SPA (React Router)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 // Start Server
