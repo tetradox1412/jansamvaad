@@ -1,0 +1,98 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.inputGroup label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--text-main);
+}
+
+.textarea,
+.select {
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.textarea:focus,
+.select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.fileWrapper {
+    position: relative;
+    overflow: hidden;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    background-color: var(--background);
+    transition: var(--transition);
+}
+
+.fileWrapper:hover {
+    border-color: var(--primary);
+}
+
+.fileInput {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.filePseudo {
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.helper {
+    font-size: 0.75rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.25rem;
+}
+
+.feedback {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.error {
+    background-color: #fee2e2;
+    color: var(--error);
+    border: 1px solid #fecaca;
+}
+
+.success {
+    background-color: #dcfce7;
+    color: var(--success);
+    border: 1px solid #bbf7d0;
+}
