@@ -46,7 +46,23 @@ export const getStats = async (pincode) => {
         if (!response.ok) throw new Error('Failed to fetch stats');
         return await response.json();
     } catch (error) {
-        // console.error("API Error (Stats):", error); // Optional: ensure this endpoint exists
         return { active: 0, resolved: 0 }; // Fallback to avoid crashing UI if endpoint missing
+    }
+};
+
+export const resolveGrievance = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/grievances/${id}/resolve`, {
+            method: 'PATCH',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to resolve grievance');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("API Error (Resolve):", error);
+        throw error;
     }
 };

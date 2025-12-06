@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getGrievances } from '../services/api';
-import { LayoutDashboard, CheckCircle2, Clock, MessageSquare, ExternalLink } from 'lucide-react';
+import { getGrievances, resolveGrievance } from '../services/api';
+import { LayoutDashboard, CheckCircle2, Clock, MessageSquare, ExternalLink, Sparkles } from 'lucide-react';
 import { generateDraftResponse } from '../services/openai';
 
 const Admin = () => {
@@ -36,6 +36,18 @@ const Admin = () => {
         }
     };
 
+    const handleResolve = async () => {
+        if (!selectedGrievance) return;
+        try {
+            const updatedGrievance = await resolveGrievance(selectedGrievance._id || selectedGrievance.id);
+            setGrievances(prev => prev.map(g => g._id === updatedGrievance._id ? updatedGrievance : g));
+            setSelectedGrievance(updatedGrievance);
+        } catch (error) {
+            console.error("Failed to resolve grievance", error);
+            alert("Failed to resolve grievance");
+        }
+    };
+
     return (
         <div className="container" style={{ padding: '2rem', display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2rem', height: '100vh', overflow: 'hidden' }}>
             {/* Sidebar List */}
@@ -48,7 +60,7 @@ const Admin = () => {
                 <div style={{ overflowY: 'auto', flex: 1, paddingRight: '1rem' }}>
                     {grievances.map(g => (
                         <div
-                            key={g.id}
+                            key={g.id || g._id}
                             onClick={() => setSelectedGrievance(g)}
                             style={{
                                 padding: '1rem',
@@ -56,14 +68,14 @@ const Admin = () => {
                                 borderRadius: 'var(--radius-md)',
                                 marginBottom: '1rem',
                                 cursor: 'pointer',
-                                backgroundColor: selectedGrievance?.id === g.id ? 'var(--background)' : 'transparent',
-                                borderColor: selectedGrievance?.id === g.id ? 'var(--primary)' : 'var(--border)'
+                                backgroundColor: (selectedGrievance?.id === g.id || selectedGrievance?._id === g._id) ? 'var(--background)' : 'transparent',
+                                borderColor: (selectedGrievance?.id === g.id || selectedGrievance?._id === g._id) ? 'var(--primary)' : 'var(--border)'
                             }}
                         >
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                 <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)' }}>{g.category}</span>
                                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                    {g.createdAt?.toDate().toLocaleDateString()}
+                                    {g.createdAt ? new Date(g.createdAt).toLocaleDateString() : 'N/A'}
                                 </span>
                             </div>
                             <p style={{ fontSize: '0.875rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{g.description}</p>
@@ -82,8 +94,15 @@ const Admin = () => {
                     <div>
                         <header style={{ marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                                <span className="btn" style={{ backgroundColor: '#e2e8f0', fontSize: '0.75rem' }}>{selectedGrievance.status}</span>
-                                <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>ID: {selectedGrievance.id}</span>
+                                <span className="btn" style={{ backgroundColor: selectedGrievance.status === 'Resolved' ? '#dcfce7' : '#e2e8f0', color: selectedGrievance.status === 'Resolved' ? '#166534' : 'inherit', fontSize: '0.75rem' }}>{selectedGrievance.status}</span>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>ID: {selectedGrievance.id || selectedGrievance._id}</span>
+                                    {selectedGrievance.status !== 'Resolved' && (
+                                        <button onClick={handleResolve} className="btn btn-primary" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>
+                                            <CheckCircle2 size={14} style={{ marginRight: '0.25rem' }} /> Mark Resolved
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                             <h3>{selectedGrievance.category}</h3>
                             <p style={{ marginTop: '1rem', lineHeight: 1.6 }}>{selectedGrievance.description}</p>
@@ -131,8 +150,5 @@ const Admin = () => {
         </div>
     );
 };
-
-// Simple icon wrapper if needed, or import form lucide directly
-import { Sparkles } from 'lucide-react';
 
 export default Admin;

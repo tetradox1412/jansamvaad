@@ -83,6 +83,42 @@ app.post('/api/grievances', async (req, res) => {
     }
 });
 
+// PATCH Resolve Grievance
+app.patch('/api/grievances/:id/resolve', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const grievance = await Grievance.findById(id);
+
+        if (!grievance) {
+            return res.status(404).json({ error: "Grievance not found" });
+        }
+
+        if (grievance.status === 'Resolved') {
+            return res.json(grievance); // Already resolved
+        }
+
+        // Update status
+        grievance.status = 'Resolved';
+        const updatedGrievance = await grievance.save();
+
+        // Update Stats
+        const pincode = grievance.constituency?.pincode;
+        if (pincode) {
+            await PincodeStats.findOneAndUpdate(
+                { pincode },
+                { $inc: { active: -1, resolved: 1 } },
+                { upsert: true, new: true } // Should ideally exist, but upsert for safety
+            );
+            console.log(`Updated stats for ${pincode}: active-1, resolved+1`);
+        }
+
+        res.json(updatedGrievance);
+    } catch (err) {
+        console.error("Error resolving grievance:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Serve Static Assets (Frontend)
 app.use(express.static(path.join(__dirname, '../dist')));
 
