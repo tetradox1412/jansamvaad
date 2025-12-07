@@ -4,6 +4,8 @@ import { getGrievances, resolveGrievance } from '../services/api';
 import { LayoutDashboard, CheckCircle2, Clock, MessageSquare, ExternalLink, Sparkles } from 'lucide-react';
 import { generateDraftResponse } from '../services/openai';
 
+import logo from '../assets/logo.jpg';
+
 const Admin = () => {
     const navigate = useNavigate();
     const logout = () => {
@@ -52,12 +54,12 @@ const Admin = () => {
             alert("Failed to resolve grievance");
         }
     };
-
     return (
         <div className="container" style={{ padding: '2rem', display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2rem', height: '100vh', overflow: 'hidden' }}>
             {/* Sidebar List */}
             <div style={{ borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-                <header style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border)', marginBottom: '1rem' }}>
+                <header style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border)', marginBottom: '1rem', textAlign: 'center' }}>
+                    <img src={logo} alt="Jansamvaad" style={{ height: '120px', marginBottom: '0.5rem', borderRadius: '4px' }} />
                     <h2>Admin Panel</h2>
                     <br />
                     <button onClick={logout} className="btn btn-outline" style={{ width: '100%' }}>Logout</button>

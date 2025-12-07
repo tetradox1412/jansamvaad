@@ -6,6 +6,7 @@ import ComplaintForm from '../components/citizen/ComplaintForm';
 import { getGrievances, getStats } from '../services/api';
 
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/logo.jpg';
 
 const Dashboard = () => {
     const { currentUser, logout } = useAuth();
@@ -60,9 +61,12 @@ const Dashboard = () => {
                 paddingBottom: '1rem',
                 borderBottom: '1px solid var(--border)'
             }}>
-                <div>
-                    <h1 style={{ fontSize: '1.5rem' }}>Namaste, Citizen</h1>
-                    <p style={{ color: 'var(--text-muted)' }}>{currentUser?.email}</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <img src={logo} alt="Jansamvaad" style={{ height: '120px', borderRadius: '4px' }} />
+                    <div>
+                        <h1 style={{ fontSize: '1.5rem' }}>Namaste, Citizen</h1>
+                        <p style={{ color: 'var(--text-muted)' }}>{currentUser?.email}</p>
+                    </div>
                 </div>
                 <button onClick={handleLogout} className="btn btn-outline" style={{ fontSize: '0.875rem' }}>
                     <LogOut size={16} /> Logout

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, MessagesSquare, BarChart3, ShieldCheck, ArrowRight } from 'lucide-react';
 import styles from './Landing.module.css';
+import logo from '../assets/logo.jpg';
 
 const Landing = () => {
     return (
@@ -10,7 +11,7 @@ const Landing = () => {
             <nav className={styles.navbar}>
                 <div className={`container ${styles.navContainer}`}>
                     <div className={styles.logo}>
-                        Jansamvaad<span className={styles.dot}>.</span>
+                        <img src={logo} alt="Jansamvaad" style={{ height: '120px', borderRadius: '4px' }} />
                     </div>
                     <div className={styles.navLinks}>
                         <Link to="/admin/login" className="btn btn-outline" style={{ marginRight: '1rem', borderColor: 'var(--primary)', color: 'var(--primary)' }}>

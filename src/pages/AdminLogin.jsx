@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Loader2, KeyRound } from 'lucide-react';
 import styles from './Login.module.css'; // Reusing Login styles for consistency
 
+import logo from '../assets/logo.jpg';
+
 const AdminLogin = () => {
+    // ... state
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isRegister, setIsRegister] = useState(false); // Toggle for initial setup
@@ -58,6 +61,7 @@ const AdminLogin = () => {
         <div className={styles.container} style={{ background: '#f0f9ff' }}>
             <div className={styles.authCard}>
                 <div className={styles.header}>
+                    <img src={logo} alt="Jansamvaad" style={{ height: '120px', marginBottom: '1rem', borderRadius: '4px' }} />
                     <h1 className={styles.title}>Admin Portal</h1>
                     <p className={styles.subtitle}>
                         {isRegister ? 'Register new administrator.' : 'Secure access for officials only.'}
