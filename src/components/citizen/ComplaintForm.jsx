@@ -80,7 +80,7 @@ const ComplaintForm = ({ constituency, onGrievanceSubmitted }) => {
 
             // ... success handling
             setSuccess(true);
-            alert("Grievance Submitted Successfully!");
+            // alert("Grievance Submitted Successfully!"); // Removed native alert
 
             // Refresh parent stats
             if (onGrievanceSubmitted) {
@@ -104,11 +104,23 @@ const ComplaintForm = ({ constituency, onGrievanceSubmitted }) => {
     if (success) {
         return (
             <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
-                <CheckCircle2 size={48} className="text-success" style={{ margin: '0 auto 1rem' }} />
-                <h3>Grievance Submitted</h3>
-                <p className="text-muted">Your representative has been notified.</p>
-                <button className="btn btn-outline" onClick={() => setSuccess(false)} style={{ marginTop: '1.5rem' }}>
-                    File Another
+                <div style={{
+                    display: 'inline-flex',
+                    padding: '1rem',
+                    borderRadius: '50%',
+                    backgroundColor: '#dcfce7',
+                    marginBottom: '1.5rem',
+                    color: '#166534'
+                }}>
+                    <CheckCircle2 size={48} />
+                </div>
+                <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Congratulations!</h3>
+                <p className="text-muted" style={{ fontSize: '1.1rem' }}>
+                    Your grievance has been successfully submitted.<br />
+                    Your representative has been notified and will review it shortly.
+                </p>
+                <button className="btn btn-outline" onClick={() => setSuccess(false)} style={{ marginTop: '2rem' }}>
+                    File Another Grievance
                 </button>
             </div>
         )

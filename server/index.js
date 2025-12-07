@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
 // Fallback URI if .env fails
 const MONGO_URI = process.env.MONGODB_URI || "mongodb+srv://mridul:mriduljoythattil@cluster0.okybbft.mongodb.net/jansamvaad";

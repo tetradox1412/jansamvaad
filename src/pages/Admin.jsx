@@ -56,13 +56,13 @@ const Admin = () => {
     return (
         <div className="container" style={{ padding: '2rem', display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2rem', height: '100vh', overflow: 'hidden' }}>
             {/* Sidebar List */}
-            <div style={{ borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
                 <header style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--border)', marginBottom: '1rem' }}>
                     <h2>Admin Panel</h2>
                     <br />
                     <button onClick={logout} className="btn btn-outline" style={{ width: '100%' }}>Logout</button>
                 </header>
-                <div style={{ overflowY: 'auto', flex: 1, paddingRight: '1rem' }}>
+                <div className="custom-scrollbar" style={{ overflowY: 'auto', flex: 1, paddingRight: '1rem' }}>
                     {grievances
                         .sort((a, b) => {
                             if (a.status === 'Resolved' && b.status !== 'Resolved') return 1;

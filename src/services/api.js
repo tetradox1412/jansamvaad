@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.DEV ? 'http://localhost:5000/api' : '/api';
+const API_URL = '/api';
 
 export const submitGrievance = async (grievanceData) => {
     try {
@@ -11,8 +11,16 @@ export const submitGrievance = async (grievanceData) => {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to submit grievance');
+            let errorMessage = 'Failed to submit grievance';
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.error || errorMessage;
+            } catch (e) {
+                // If JSON parse fails, try text
+                const text = await response.text();
+                errorMessage = text || `Server Error: ${response.status}`;
+            }
+            throw new Error(errorMessage);
         }
 
         return await response.json();
