@@ -119,11 +119,65 @@ app.patch('/api/grievances/:id/resolve', async (req, res) => {
     }
 });
 
+// Admin Auth Routes
+const Admin = require('./models/Admin');
+
+// POST Admin Register (For initial setup)
+app.post('/api/admin/register', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Simple validation
+        if (!username || !password) {
+            return res.status(400).json({ error: "Username and password required" });
+        }
+
+        // Check if exists
+        const existing = await Admin.findOne({ username });
+        if (existing) {
+            return res.status(400).json({ error: "Admin already exists" });
+        }
+
+        const newAdmin = new Admin({ username, password });
+        await newAdmin.save();
+
+        res.status(201).json({ message: "Admin created successfully" });
+    } catch (err) {
+        console.error("Admin register error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// POST Admin Login
+app.post('/api/admin/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        const admin = await Admin.findOne({ username });
+        if (!admin) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
+
+        // Direct password comparison (for hackathon scope)
+        if (admin.password !== password) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
+
+        // Return logic success (in a real app, generate JWT)
+        // Here we just return success and let client handle "session" via local storage flag
+        res.json({ message: "Login successful", username: admin.username, role: admin.role });
+    } catch (err) {
+        console.error("Admin login error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Serve Static Assets (Frontend)
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // Catch-all route for SPA (React Router)
-app.get('*', (req, res) => {
+// Catch-all route for SPA (React Router)
+app.get(/(.*)/, (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 

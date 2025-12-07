@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { getGrievances, resolveGrievance } from '../services/api';
 import { LayoutDashboard, CheckCircle2, Clock, MessageSquare, ExternalLink, Sparkles } from 'lucide-react';
 import { generateDraftResponse } from '../services/openai';
 
 const Admin = () => {
-    const { logout } = useAuth();
+    const navigate = useNavigate();
+    const logout = () => {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        navigate('/admin/login');
+    };
     const [grievances, setGrievances] = useState([]);
     const [selectedGrievance, setSelectedGrievance] = useState(null);
     const [draftRequest, setDraftRequest] = useState(false);
@@ -58,29 +63,40 @@ const Admin = () => {
                     <button onClick={logout} className="btn btn-outline" style={{ width: '100%' }}>Logout</button>
                 </header>
                 <div style={{ overflowY: 'auto', flex: 1, paddingRight: '1rem' }}>
-                    {grievances.map(g => (
-                        <div
-                            key={g.id || g._id}
-                            onClick={() => setSelectedGrievance(g)}
-                            style={{
-                                padding: '1rem',
-                                border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius-md)',
-                                marginBottom: '1rem',
-                                cursor: 'pointer',
-                                backgroundColor: (selectedGrievance?.id === g.id || selectedGrievance?._id === g._id) ? 'var(--background)' : 'transparent',
-                                borderColor: (selectedGrievance?.id === g.id || selectedGrievance?._id === g._id) ? 'var(--primary)' : 'var(--border)'
-                            }}
-                        >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)' }}>{g.category}</span>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                    {g.createdAt ? new Date(g.createdAt).toLocaleDateString() : 'N/A'}
-                                </span>
+                    {grievances
+                        .sort((a, b) => {
+                            if (a.status === 'Resolved' && b.status !== 'Resolved') return 1;
+                            if (a.status !== 'Resolved' && b.status === 'Resolved') return -1;
+                            return new Date(b.createdAt) - new Date(a.createdAt);
+                        })
+                        .map(g => (
+                            <div
+                                key={g.id || g._id}
+                                onClick={() => setSelectedGrievance(g)}
+                                style={{
+                                    padding: '1rem',
+                                    border: '1px solid var(--border)',
+                                    borderRadius: 'var(--radius-md)',
+                                    marginBottom: '1rem',
+                                    cursor: 'pointer',
+                                    backgroundColor: (selectedGrievance?.id === g.id || selectedGrievance?._id === g._id)
+                                        ? 'var(--background)'
+                                        : (g.status === 'Resolved' ? '#f0fdf4' : 'transparent'), // Light green for resolved
+                                    borderColor: (selectedGrievance?.id === g.id || selectedGrievance?._id === g._id)
+                                        ? 'var(--primary)'
+                                        : (g.status === 'Resolved' ? '#bbf7d0' : 'var(--border)'),
+                                    opacity: g.status === 'Resolved' ? 0.8 : 1
+                                }}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: g.status === 'Resolved' ? '#166534' : 'var(--primary)' }}>{g.category}</span>
+                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                        {g.createdAt ? new Date(g.createdAt).toLocaleDateString() : 'N/A'}
+                                    </span>
+                                </div>
+                                <p style={{ fontSize: '0.875rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: g.status === 'Resolved' ? 'line-through' : 'none', color: g.status === 'Resolved' ? 'var(--text-muted)' : 'inherit' }}>{g.description}</p>
                             </div>
-                            <p style={{ fontSize: '0.875rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{g.description}</p>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             </div>
 

@@ -13,6 +13,9 @@ const Landing = () => {
                         Jansamvaad<span className={styles.dot}>.</span>
                     </div>
                     <div className={styles.navLinks}>
+                        <Link to="/admin/login" className="btn btn-outline" style={{ marginRight: '1rem', borderColor: 'var(--primary)', color: 'var(--primary)' }}>
+                            Admin Portal
+                        </Link>
                         <Link to="/login" className="btn btn-primary">
                             Get Started <ArrowRight size={18} />
                         </Link>
